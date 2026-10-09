@@ -1,0 +1,15 @@
+{
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "image-name" : "app-icon.svg",
+          "name" : "app-icon"
+        }
+      ]
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}

@@ -46,7 +46,9 @@ export default function RootLayout() {
           name="index"
           options={{
             title: 'Timer',
-            tabBarIcon: ({ color, size }) => <Ionicons name="timer-outline" color={color} size={size} />,
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="timer-outline" color={color as string} size={size} />
+            ),
           }}
         />
         <Tabs.Screen
@@ -54,7 +56,7 @@ export default function RootLayout() {
           options={{
             title: 'Summary',
             tabBarIcon: ({ color, size }) => (
-              <Ionicons name="stats-chart-outline" color={color} size={size} />
+              <Ionicons name="stats-chart-outline" color={color as string} size={size} />
             ),
           }}
         />
@@ -62,7 +64,9 @@ export default function RootLayout() {
           name="forest"
           options={{
             title: 'Forest',
-            tabBarIcon: ({ color, size }) => <Ionicons name="leaf-outline" color={color} size={size} />,
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="leaf-outline" color={color as string} size={size} />
+            ),
           }}
         />
       </Tabs>

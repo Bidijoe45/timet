@@ -14,6 +14,13 @@ import { TreeThumb } from '@/components/forest/TreeThumb';
 import { insertSession } from '@/db/sessions';
 import { TREE_LABELS } from '@/features/forest/forestConfig';
 import { useForestStore } from '@/features/forest/forestStore';
+import {
+  endSessionActivity,
+  pauseSessionActivity,
+  resumeSessionActivity,
+  startSessionActivity,
+  type SessionActivity,
+} from '@/features/liveActivity/liveActivity';
 import { cancelScheduled, scheduleCompletion } from '@/features/notifications/notifications';
 import { useTagStore } from '@/features/tags/tagStore';
 import {
@@ -50,9 +57,13 @@ export default function TimerScreen() {
   const tagName = selectedTag?.name;
 
   const selectedTree = useForestStore((s) => s.selectedTree);
+  const treeLabel = TREE_LABELS[selectedTree];
 
   const [showTagEditor, setShowTagEditor] = useState(false);
   const [showGiveUp, setShowGiveUp] = useState(false);
+
+  // Lock Screen / Dynamic Island activity for the running session (iOS only; no-ops elsewhere).
+  const activity = useRef<SessionActivity | null>(null);
 
   // Scheduled "session complete" notification id, so we can cancel/reschedule it.
   const notifId = useRef<string | null>(null);
@@ -105,9 +116,11 @@ export default function TimerScreen() {
         tagName: selectedTag?.name,
         tagColor: selectedTag?.color,
       });
+      endSessionActivity(activity.current, true, tagName, treeLabel);
+      activity.current = null;
     }
     prevStatus.current = status;
-  }, [status, selectedTagId, selectedTag]);
+  }, [status, selectedTagId, selectedTag, tagName, treeLabel]);
 
   const remaining = remainingMs(plannedMs, elapsedMs);
   const progress = plannedMs > 0 ? elapsedMs / plannedMs : 0;
@@ -117,18 +130,23 @@ export default function TimerScreen() {
   const onStart = () => {
     if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
     start();
-    scheduleNotif(useTimerStore.getState().plannedMs);
+    const plannedMsNow = useTimerStore.getState().plannedMs;
+    scheduleNotif(plannedMsNow);
+    activity.current = startSessionActivity(plannedMsNow, tagName, treeLabel);
   };
 
   const onPause = () => {
     pause();
     clearNotif();
+    const st = useTimerStore.getState();
+    pauseSessionActivity(activity.current, st.plannedMs - st.elapsedMs, st.plannedMs, tagName, treeLabel);
   };
 
   const onResume = () => {
     resume();
     const st = useTimerStore.getState();
     scheduleNotif(st.plannedMs - st.elapsedMs);
+    resumeSessionActivity(activity.current, st.plannedMs - st.elapsedMs, tagName, treeLabel);
   };
 
   const onGiveUp = () => {
@@ -156,6 +174,8 @@ export default function TimerScreen() {
       tagName: selectedTag?.name,
       tagColor: selectedTag?.color,
     });
+    endSessionActivity(activity.current, false, tagName, treeLabel);
+    activity.current = null;
     setShowGiveUp(false);
     reset();
   };
