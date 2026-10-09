@@ -16,22 +16,25 @@ stats, or more than one tree type — and the ones that don't are full of ads. T
 free version of that idea: start a timer, focus, grow a forest. No account, no subscription, no
 ads, no network calls — everything lives in a SQLite database on your phone.
 
+It's also entirely vibecoded — built together with Claude Code rather than hand-written line by
+line.
+
 ## Screenshots
+
 ### Timer
-![Timer screen](docs/screenshots/timer.png)
-![Timer screen running](docs/screenshots/timer2.png)
+<img src="docs/screenshots/timer.png" width="200" alt="Timer screen" />
+<img src="docs/screenshots/timer2.png" width="200" alt="Timer screen running" />
 
 ### Summary
-![Summary screen](docs/screenshots/summary.png) 
-![Summary screen details](docs/screenshots/summary2.png) 
+<img src="docs/screenshots/summary.png" width="200" alt="Summary screen" />
+<img src="docs/screenshots/summary2.png" width="200" alt="Summary screen details" />
 
 ### Forest
-![Forest Screen](docs/screenshots/forest.png) 
-![Shop](docs/screenshots/shop.png) 
+<img src="docs/screenshots/forest.png" width="200" alt="Forest screen" />
+<img src="docs/screenshots/shop.png" width="200" alt="Shop" />
 
-
-### Live activity
-![Lock Screen Live Activity](docs/screenshots/live-activity.png)
+### Live Activity
+<img src="docs/screenshots/live-activity.png" width="200" alt="Lock Screen Live Activity" />
 
 ## Features
 
