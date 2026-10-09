@@ -1,0 +1,295 @@
+<title>Datacenter Sprite Set</title>
+<style>
+  /* Layout: a labeled lab sheet — header band, a grid of sprite cells, then the live pipeline strip. */
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --fg: #15181d;
+    --muted: #5b6471;
+    --line: #dfe3e8;
+    --accent: #0d9488;   /* compute / teal */
+    --amber: #d97706;    /* active LED */
+    --grid: #eef1f4;
+    --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+    --sans: "IBM Plex Sans", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d1117; --surface: #161b22; --fg: #e6edf3; --muted: #8b949e;
+      --line: #272e38; --accent: #2dd4bf; --amber: #f59e0b; --grid: #11161d;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d1117; --surface: #161b22; --fg: #e6edf3; --muted: #8b949e;
+    --line: #272e38; --accent: #2dd4bf; --amber: #f59e0b; --grid: #11161d;
+    color-scheme: dark;
+  }
+
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); }
+  .wrap { max-width: 920px; margin: 0 auto; padding-block: 28px 56px; padding-inline: 16px; }
+
+  header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); padding-bottom: 18px; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  h1 { font-size: clamp(22px, 5vw, 30px); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+  .sub { color: var(--muted); max-width: 60ch; margin: 10px 0 0; line-height: 1.5; font-size: 14px; }
+
+  .toggle { font-family: var(--mono); font-size: 12px; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; cursor: pointer; }
+  .toggle:hover { border-color: var(--accent); }
+  .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .section-label { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 36px 0 14px; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+  .cell {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 14px 12px; display: flex; flex-direction: column; align-items: center; gap: 14px;
+    background-image: radial-gradient(var(--grid) 1px, transparent 1px); background-size: 12px 12px; background-position: center 14px;
+  }
+  .art { height: 60px; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+  .art svg { display: block; width: auto; height: 100%; max-width: 110px; }
+  .name { font-family: var(--mono); font-size: 12px; color: var(--fg); }
+  .note { font-size: 11px; color: var(--muted); margin-top: -8px; }
+
+  .led { fill: var(--amber); }
+  .dim { color: var(--muted); }
+
+  /* tint demo */
+  .tints { display: flex; gap: 14px; flex-wrap: wrap; }
+  .tint { flex: 1 1 120px; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .tint svg { height: 46px; }
+  .tint .name { font-size: 11px; }
+
+  /* pipeline */
+  .pipe { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 22px 18px; }
+  .pipe-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .stage { display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 0 0 auto; }
+  .stage .art { color: var(--accent); }
+  .stage span { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; }
+  .link { flex: 1 1 auto; min-width: 20px; height: 2px; background: var(--line); position: relative; border-radius: 2px; }
+  .packet { position: absolute; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 2px; background: var(--accent); }
+  .meters { display: flex; gap: 18px; justify-content: center; margin-top: 20px; font-family: var(--mono); font-size: 12px; flex-wrap: wrap; }
+  .meter b { color: var(--accent); font-variant-numeric: tabular-nums; }
+  .meter.amber b { color: var(--amber); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .spin { transform-box: fill-box; transform-origin: center; animation: spin 3.2s linear infinite; }
+    .packet { animation: flow 2.4s linear infinite; }
+    .packet.b { animation-delay: 1.2s; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes flow { from { left: -7px; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } to { left: 100%; opacity: 0; } }
+    .blink { animation: blink 1.8s steps(1) infinite; }
+    .blink2 { animation: blink 1.8s steps(1) infinite; animation-delay: .9s; }
+    @keyframes blink { 0%, 60% { opacity: 1; } 61%, 100% { opacity: .25; } }
+  }
+  .footer { margin-top: 40px; font-size: 12px; color: var(--muted); line-height: 1.6; border-top: 1px solid var(--line); padding-top: 16px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">TimeT · Datacenter</p>
+      <h1>Sprite Set &amp; Style Sample</h1>
+      <p class="sub">Every icon here is hand-authored SVG — no bundled art. Each draws from <code>currentColor</code>, so the same shape re-tints to the theme or to a tag's color, and stays crisp at any size.</p>
+    </div>
+    <button class="toggle" id="themeBtn" type="button">◐ toggle theme</button>
+  </header>
+
+  <p class="section-label">Core gear</p>
+  <div class="grid">
+
+    <div class="cell">
+      <div class="art" aria-label="Server unit">
+        <svg viewBox="0 0 96 30" role="img">
+          <rect x="1" y="1" width="94" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+          <line x1="10" y1="9" x2="10" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="16" y1="9" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="22" y1="9" x2="22" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <rect x="34" y="12" width="30" height="6" rx="3" fill="currentColor" opacity=".25"/>
+          <circle class="led blink" cx="78" cy="15" r="3"/>
+          <circle class="led blink2" cx="88" cy="15" r="3"/>
+        </svg>
+      </div>
+      <div class="name">server · 1U</div>
+      <div class="note">base compute</div>
+    </div>
+
+    <div class="cell">
+      <div class="art" aria-label="Rack">
+        <svg viewBox="0 0 56 92" role="img">
+          <rect x="2" y="2" width="52" height="88" rx="6" fill="none" stroke="currentColor" stroke-width="2"/>
+          <!-- units -->
+          <g>
+            <rect x="9" y="10" width="38" height="11" rx="2.5" fill="currentColor" opacity=".16"/>
+            <circle class="led" cx="41" cy="15.5" r="2"/>
+            <rect x="9" y="25" width="38" height="11" rx="2.5" fill="currentColor" opacity=".16"/>
+            <circle class="led" cx="41" cy="30.5" r="2"/>
+            <rect x="9" y="40" width="38" height="11" rx="2.5" fill="currentColor" opacity=".16"/>
+            <circle class="led blink" cx="41" cy="45.5" r="2"/>
+            <rect x="9" y="55" width="38" height="11" rx="2.5" fill="currentColor" opacity=".16"/>
+            <circle class="led blink2" cx="41" cy="60.5" r="2"/>
+            <rect x="9" y="70" width="38" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3" opacity=".5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="name">rack</div>
+      <div class="note">fills as you buy</div>
+    </div>
+
+    <div class="cell">
+      <div class="art" aria-label="GPU accelerator">
+        <svg viewBox="0 0 96 44" role="img">
+          <rect x="3" y="7" width="84" height="30" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+          <rect x="3" y="7" width="12" height="30" rx="2" fill="currentColor" opacity=".18"/>
+          <circle cx="40" cy="22" r="11" fill="none" stroke="currentColor" stroke-width="2"/>
+          <g class="spin">
+            <path d="M40 22 L40 13 M40 22 L47.8 26.5 M40 22 L32.2 26.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </g>
+          <circle cx="40" cy="22" r="2.2" fill="currentColor"/>
+          <rect x="60" y="15" width="22" height="14" rx="2" fill="currentColor" opacity=".18"/>
+          <line x1="22" y1="37" x2="22" y2="42" stroke="currentColor" stroke-width="2"/>
+          <line x1="66" y1="37" x2="66" y2="42" stroke="currentColor" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="name">gpu</div>
+      <div class="note">high compute</div>
+    </div>
+
+    <div class="cell">
+      <div class="art" aria-label="Network switch">
+        <svg viewBox="0 0 96 34" role="img">
+          <rect x="1" y="6" width="94" height="22" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+          <g fill="currentColor" opacity=".3">
+            <rect x="9" y="18" width="8" height="6" rx="1"/>
+            <rect x="21" y="18" width="8" height="6" rx="1"/>
+            <rect x="33" y="18" width="8" height="6" rx="1"/>
+            <rect x="45" y="18" width="8" height="6" rx="1"/>
+            <rect x="57" y="18" width="8" height="6" rx="1"/>
+            <rect x="69" y="18" width="8" height="6" rx="1"/>
+          </g>
+          <circle class="led blink" cx="13" cy="12" r="2"/>
+          <circle class="led blink2" cx="25" cy="12" r="2"/>
+          <circle class="led blink" cx="37" cy="12" r="2"/>
+          <circle class="led blink2" cx="83" cy="12" r="2"/>
+        </svg>
+      </div>
+      <div class="name">switch</div>
+      <div class="note">bandwidth / links</div>
+    </div>
+
+    <div class="cell">
+      <div class="art" aria-label="Cooling fan">
+        <svg viewBox="0 0 60 60" role="img">
+          <rect x="2" y="2" width="56" height="56" rx="8" fill="none" stroke="currentColor" stroke-width="2"/>
+          <circle cx="30" cy="30" r="21" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".4"/>
+          <g class="spin">
+            <path d="M30 30 C 30 16, 44 18, 30 30 C 44 30, 42 44, 30 30 C 30 44, 16 42, 30 30 C 16 30, 18 16, 30 30 Z" fill="currentColor" opacity=".7"/>
+          </g>
+          <circle cx="30" cy="30" r="3.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="name">cooling</div>
+      <div class="note">efficiency ×</div>
+    </div>
+
+    <div class="cell">
+      <div class="art" aria-label="Request source">
+        <svg viewBox="0 0 74 48" role="img">
+          <path d="M22 38 h32 a11 11 0 0 0 1 -22 a15 15 0 0 0 -29 -4 a10 10 0 0 0 -4 26 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M37 20 v12 M37 32 l-5 -5 M37 32 l5 -5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="name">ingest</div>
+      <div class="note">incoming jobs</div>
+    </div>
+
+    <div class="cell">
+      <div class="art" aria-label="Egress node">
+        <svg viewBox="0 0 64 56" role="img">
+          <rect x="6" y="22" width="52" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M32 44 V10 M32 10 l-9 9 M32 10 l9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle class="led blink" cx="16" cy="43" r="2.4"/>
+        </svg>
+      </div>
+      <div class="name">egress</div>
+      <div class="note">results → credits</div>
+    </div>
+
+    <div class="cell">
+      <div class="art" aria-label="Packet">
+        <svg viewBox="0 0 40 40" role="img">
+          <rect x="11" y="11" width="18" height="18" rx="4" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="name">packet</div>
+      <div class="note">unit of flow</div>
+    </div>
+
+  </div>
+
+  <p class="section-label">Same sprite, re-tinted</p>
+  <div class="tints">
+    <div class="tint" style="color: var(--accent)">
+      <svg viewBox="0 0 96 30" role="img" aria-label="Server, accent tint"><rect x="1" y="1" width="94" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><line x1="10" y1="9" x2="10" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="9" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="22" y1="9" x2="22" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="34" y="12" width="30" height="6" rx="3" fill="currentColor" opacity=".25"/><circle cx="82" cy="15" r="3" fill="currentColor"/></svg>
+      <div class="name dim">accent</div>
+    </div>
+    <div class="tint" style="color:#7c3aed">
+      <svg viewBox="0 0 96 30" role="img" aria-label="Server, work tag"><rect x="1" y="1" width="94" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><line x1="10" y1="9" x2="10" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="9" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="22" y1="9" x2="22" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="34" y="12" width="30" height="6" rx="3" fill="currentColor" opacity=".25"/><circle cx="82" cy="15" r="3" fill="currentColor"/></svg>
+      <div class="name dim">tag · Work</div>
+    </div>
+    <div class="tint" style="color:#e11d48">
+      <svg viewBox="0 0 96 30" role="img" aria-label="Server, study tag"><rect x="1" y="1" width="94" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><line x1="10" y1="9" x2="10" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="9" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="22" y1="9" x2="22" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="34" y="12" width="30" height="6" rx="3" fill="currentColor" opacity=".25"/><circle cx="82" cy="15" r="3" fill="currentColor"/></svg>
+      <div class="name dim">tag · Study</div>
+    </div>
+    <div class="tint" style="color:#0ea5e9">
+      <svg viewBox="0 0 96 30" role="img" aria-label="Server, reading tag"><rect x="1" y="1" width="94" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><line x1="10" y1="9" x2="10" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="9" x2="16" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="22" y1="9" x2="22" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="34" y="12" width="30" height="6" rx="3" fill="currentColor" opacity=".25"/><circle cx="82" cy="15" r="3" fill="currentColor"/></svg>
+      <div class="name dim">tag · Reading</div>
+    </div>
+  </div>
+
+  <p class="section-label">The pipeline, running (this is what you watch while focusing)</p>
+  <div class="pipe">
+    <div class="pipe-row">
+      <div class="stage">
+        <div class="art"><svg viewBox="0 0 74 48" height="40" role="img" aria-label="Ingest"><path d="M22 38 h32 a11 11 0 0 0 1 -22 a15 15 0 0 0 -29 -4 a10 10 0 0 0 -4 26 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg></div>
+        <span>INGEST</span>
+      </div>
+      <div class="link"><i class="packet"></i><i class="packet b"></i></div>
+      <div class="stage">
+        <div class="art"><svg viewBox="0 0 56 92" height="48" role="img" aria-label="Compute"><rect x="2" y="2" width="52" height="88" rx="6" fill="none" stroke="currentColor" stroke-width="3"/><rect x="11" y="14" width="34" height="9" rx="2" fill="currentColor" opacity=".25"/><rect x="11" y="28" width="34" height="9" rx="2" fill="currentColor" opacity=".25"/><rect x="11" y="42" width="34" height="9" rx="2" fill="currentColor" opacity=".25"/><rect x="11" y="56" width="34" height="9" rx="2" fill="currentColor" opacity=".25"/><rect x="11" y="70" width="34" height="9" rx="2" fill="currentColor" opacity=".25"/></svg></div>
+        <span>COMPUTE</span>
+      </div>
+      <div class="link"><i class="packet"></i><i class="packet b"></i></div>
+      <div class="stage">
+        <div class="art"><svg viewBox="0 0 64 56" height="40" role="img" aria-label="Deliver"><rect x="6" y="22" width="52" height="28" rx="5" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M32 44 V10 M32 10 l-9 9 M32 10 l9 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span>DELIVER</span>
+      </div>
+    </div>
+    <div class="meters">
+      <div class="meter">compute/s <b id="cps">128</b></div>
+      <div class="meter amber">credits <b id="cr">0</b></div>
+      <div class="meter">throughput <b>94%</b></div>
+    </div>
+  </div>
+
+  <p class="footer">Everything above is roughly ~6&nbsp;KB of inline SVG + CSS — no image files. In the app these become React Native SVG components (<code>react-native-svg</code>), animated with Reanimated. Sourced art would only be worth it later for richer “hero” illustrations.</p>
+</div>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeBtn");
+    btn.addEventListener("click", function () {
+      var cur = root.getAttribute("data-theme");
+      var next = cur === "dark" ? "light" : cur === "light" ? "dark"
+        : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "light" : "dark");
+      root.setAttribute("data-theme", next);
+    });
+    // ambient credit counter so the "running" state reads as alive
+    var cr = document.getElementById("cr"), n = 0;
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setInterval(function () { n += 7; cr.textContent = n.toLocaleString(); }, 900);
+    } else { cr.textContent = "1,204"; }
+  })();
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
